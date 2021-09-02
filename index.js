@@ -14,33 +14,43 @@ function switchText() {
 
 // Airport
 
-var data = {
-  "MAA": "Chennai",
-  "BLR": "Bangalore",
-  "BWI": "Baltimore",
-  "IAD": "Dulles",
-  "HEF": "Manassas",
-  "AGR": "Agra",
-  "BEP": "Bellary",
-  "CCJ": "Calicut",
-  "IXC": "Chandigarh",
-  "BOM": "Mumbai",
-  "COK": "Cochin",
-  "CJB": "Coimbatore",
-  "DEL": "Delhi",
-  "IXM": "Madurai",
-  "IXE": "Mangalore",
-  "PNY": "Pondicherry",
-  "TRZ": "Tiruchirapalli",
-  "VGA": "Vijayawada",
-  "SXV": "Salem"
-};
+// var data = {
+//   "MAA": "Chennai",
+//   "BLR": "Bangalore",
+//   "BWI": "Baltimore",
+//   "IAD": "Dulles",
+//   "HEF": "Manassas",
+//   "AGR": "Agra",
+//   "BEP": "Bellary",
+//   "CCJ": "Calicut",
+//   "IXC": "Chandigarh",
+//   "BOM": "Mumbai",
+//   "COK": "Cochin",
+//   "CJB": "Coimbatore",
+//   "DEL": "Delhi",
+//   "IXM": "Madurai",
+//   "IXE": "Mangalore",
+//   "PNY": "Pondicherry",
+//   "TRZ": "Tiruchirapalli",
+//   "VGA": "Vijayawada",
+//   "SXV": "Salem"
+// };
+
+// function getAirports() {
+//   var arr = [];
+//   for (var airport in data) {
+//       if (data.hasOwnProperty(airport)) {
+//           arr.push(airport + " - " + data[airport]);
+//       }
+//   }
+//   return arr;
+// }
 
 function getAirports() {
   var arr = [];
-  for (var airport in data) {
-      if (data.hasOwnProperty(airport)) {
-          arr.push(airport + " - " + data[airport]);
+  for (var temp in airports) {
+      if (airports.hasOwnProperty(temp)) {
+          arr.push(airports[temp].iata + " - " + airports[temp].name);
       }
   }
   return arr;
@@ -54,17 +64,49 @@ $("#fromCity, #toCity").autocomplete({
 
 function redirectURL() {
 
-  var from = document.getElementById('fromCity').value;
-  var fromCity = from.split("- ")[1];
-  fromCity = fromCity.toLowerCase();
-  fromCity = escape(fromCity);
+  var fromname = document.getElementById('fromCity').value;
+  var fromCityName = fromname.split("- ")[1];
 
-  var to = document.getElementById('toCity').value;
-  var toCity = to.split("- ")[1];
-  toCity = toCity.toLowerCase();
-  toCity = escape(toCity);
+  let result1 = airports.filter(obj => {
+    return obj.name === fromCityName;
+  })
+  var fromCityCountry = result1[0].country;
+  fromCityName = fromCityName.toLowerCase();
+  fromCityName = fromCityName.replaceAll(' ','-');
 
-  location.href = fromCity + '-' + toCity + '-flights.html';
+
+  var toname = document.getElementById('toCity').value;
+  var toCityName = toname.split("- ")[1];
+
+  let result2 = airports.filter(obj => {
+    return obj.name === toCityName;
+  })
+  var toCityCountry = result2[0].country;
+  toCityName = toCityName.toLowerCase();
+  toCityName = toCityName.replaceAll(' ','-');
+
+
+  if (fromCityCountry == toCityCountry) {
+    console.log("domestic");
+    var countryLocation = "domestic";
+  }
+  else {
+    console.log("international");
+    var countryLocation = "international";
+  }
+
+
+  var trip = document.getElementById('trip').value;
+  var fromdate = document.getElementById('datetoday').value;
+  var todate = document.getElementById('toDate').value;
+  var traveller = document.getElementById('traveller').value;
+
+  console.log(trip);
+  console.log(fromdate);
+  console.log(todate);
+  console.log(traveller);
+
+  location.href = "flights/" + countryLocation + "/" + 'results?' + 'trip=' + trip + '&sourceCity=' + fromCityName + '&destinationCity=' + toCityName + '&fromDate=' + fromdate + '&toDate=' + todate + '&travellers=' + traveller;
 
   return false;
 
@@ -123,19 +165,6 @@ function ToCity(){
 //   for (var airport in data) {
 //       if (data.hasOwnProperty(airport)) {
 //           arr.push(airport + " - " + data[airport].city);
-//       }
-//   }
-//   return arr;
-// }
-
-
-//Another backup code
-
-// function getAirports() {
-//   var arr = [];
-//   for (var temp in airports) {
-//       if (airports.hasOwnProperty(temp)) {
-//           arr.push(airports[temp].iata + " - " + airports[temp].name);
 //       }
 //   }
 //   return arr;
